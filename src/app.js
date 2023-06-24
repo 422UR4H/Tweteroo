@@ -23,8 +23,14 @@ app.get("/tweets", (req, res) => {
     const lastTweets = tweets.slice(-LAST_TWEETS);
 
     lastTweets.forEach((tweet) => {
-        const { avatar } = users.find((u) => u.username === tweet.username);
-        tweet.avatar = avatar;
+        // const avatar = users.find((u) => u.username === tweet.username).avatar;
+        // const avatar = user ? user.avatar : null;
+        // if (avatar === undefined) {
+        //     return res.sendStatus(400);
+        // }
+        // tweet.avatar = avatar;
+
+        tweet.avatar = users.find((u) => u.username === tweet.username).avatar;
     });
     res.send(lastTweets);
 });
@@ -52,7 +58,7 @@ app.post("/tweets", (req, res) => {
     }
 
     if (!users.some((u) => u.username === username)) {
-        res.status(401).send("UNAUTHORIZED");
+        return res.status(401).send("UNAUTHORIZED");
     }
 
     tweets.push({ username, tweet });
@@ -65,10 +71,10 @@ app.get("/tweets/:username", (req, res) => {
     if (!users.some(u => u.username === username)) {
         return res.sendStatus(404);
     }
-    
-    const userTweets = tweets.filter((tweet) => {
+
+    const userTweets = tweets.filter((t) => {
         if (t.username === username) {
-            const {username, tweet} = tweet;
+            const { username, tweet } = t;
             return { username, tweet };
         }
     });

@@ -32,12 +32,12 @@ app.get("/tweets", (req, res) => {
 app.post("/sign-up", (req, res) => {
     const { username, avatar } = req.body;
 
-    if (users.some(u => u.username === username)) {
-        return res.status(409).send("Username indisponível");
+    if (typeof username !== "string" || typeof avatar !== "string") {
+        return res.status(400).send("Todos os campos são obrigatórios!");
     }
 
-    if (!username || !avatar) {
-        return res.status(400).send("Username ou Avatar não inserido");
+    if (users.some(u => u.username === username)) {
+        return res.status(409).send("Username indisponível");
     }
 
     users.push({ username, avatar });
@@ -47,8 +47,8 @@ app.post("/sign-up", (req, res) => {
 app.post("/tweets", (req, res) => {
     const { username, tweet } = req.body;
 
-    if (!username || !tweet) {
-        return res.status(400).send("Username ou Avatar não inserido");
+    if (typeof username !== "string" || typeof tweet !== "string") {
+        return res.status(400).send("Todos os campos são obrigatórios!");
     }
 
     if (!users.some((u) => u.username === username)) {

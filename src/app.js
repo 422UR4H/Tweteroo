@@ -1,4 +1,4 @@
-import express, { jason } from "express";
+import express, { json } from "express";
 import cors from "cors";
 
 const LAST_TWEETS = 10;
@@ -25,7 +25,7 @@ app.get("/tweets", (req, res) => {
     lastTweets.forEach((tweet) => {
         const { avatar } = users.find((u) => u.username === tweet.username);
         tweet.avatar = avatar;
-    })
+    });
     res.send(lastTweets);
 });
 
@@ -59,6 +59,26 @@ app.post("/tweets", (req, res) => {
     res.status(201).send("OK");
 });
 
+app.get("/tweets/:username", (req, res) => {
+    const { username } = req.params;
+
+    if (!users.some(u => u.username === username)) {
+        return res.sendStatus(404);
+    }
+    
+    const userTweets = tweets.filter((tweet) => {
+        if (t.username === username) {
+            const {username, tweet} = tweet;
+            return { username, tweet };
+        }
+    });
+
+    userTweets.forEach((u) => {
+        const { avatar } = users.find(u => u.username === u.username);
+        u.avatar = avatar;
+    });
+    res.send(userTweets);
+});
 
 // segundo parâmetro opcional
 app.listen(PORT, () => console.log(`the server is running on port ${PORT}`));

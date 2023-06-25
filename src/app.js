@@ -1,5 +1,7 @@
 import express, { json } from "express";
 import cors from "cors";
+import notString from "./notString.js";
+
 
 const LAST_TWEETS = 10;
 const users = [];
@@ -38,7 +40,7 @@ app.get("/tweets", (req, res) => {
 app.post("/sign-up", (req, res) => {
     const { username, avatar } = req.body;
 
-    if (typeof username !== "string" || typeof avatar !== "string") {
+    if (notString(username) || notString(avatar)) {
         return res.status(400).send("Todos os campos são obrigatórios!");
     }
 
@@ -53,7 +55,7 @@ app.post("/sign-up", (req, res) => {
 app.post("/tweets", (req, res) => {
     const { username, tweet } = req.body;
 
-    if (typeof username !== "string" || typeof tweet !== "string") {
+    if (notString(username) || notString(tweet)) {
         return res.status(400).send("Todos os campos são obrigatórios!");
     }
 

@@ -22,11 +22,21 @@ app.use(json());
 
 // o primeiro parâmetro é a rota
 app.get("/tweets", (req, res) => {
-    const lastTweets = tweets.slice(-LAST_TWEETS);
+    let page = parseInt(req.query.page);
+    if (page && page < 1) {
+        return res.status(400).send("Informe uma página válida!");
+    }
+    if (!page) {
+        page = 1;
+    }
 
+    const firstIndex = LAST_TWEETS * (page - 1);
+    const lastIndex = LAST_TWEETS * page;
+    const lastTweets = tweets.slice(firstIndex, lastIndex);
     lastTweets.forEach((tweet) => {
         tweet.avatar = users.find((u) => u.username === tweet.username).avatar;
     });
+
     res.send(lastTweets);
 });
 

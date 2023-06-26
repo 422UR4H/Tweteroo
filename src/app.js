@@ -23,13 +23,13 @@ app.use(json());
 // o primeiro parâmetro é a rota
 app.get("/tweets", (req, res) => {
     let page = parseInt(req.query.page);
+
     if (page && page < 1) {
         return res.status(400).send("Informe uma página válida!");
     }
     if (!page) {
         page = 1;
-    }
-
+    }8
     const firstIndex = LAST_TWEETS * (page - 1);
     const lastIndex = LAST_TWEETS * page;
     const lastTweets = tweets.slice(firstIndex, lastIndex);
@@ -54,15 +54,16 @@ app.post("/sign-up", (req, res) => {
 });
 
 app.post("/tweets", (req, res) => {
-    const { username, tweet } = req.body;
+    const { user } = req.headers;
+    const { tweet } = req.body;
 
-    if (notString(username) || notString(tweet)) {
+    if (notString(user) || notString(tweet)) {
         return res.status(400).send("Todos os campos são obrigatórios!");
     }
-    if (!users.some((u) => u.username === username)) {
+    if (!users.some((u) => u.username === user)) {
         return res.status(401).send("UNAUTHORIZED");
     }
-    tweets.push({ username, tweet });
+    tweets.push({ user, tweet });
     res.status(201).send("OK");
 });
 

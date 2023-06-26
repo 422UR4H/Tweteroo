@@ -22,21 +22,20 @@ app.use(json());
 
 // o primeiro parâmetro é a rota
 app.get("/tweets", (req, res) => {
-    let page = parseInt(req.query.page);
+    let page = parseInt(req.query.page) || 1;
 
-    if (page && page < 1) {
+    if (/*page && */page < 1) {
         return res.status(400).send("Informe uma página válida!");
     }
-    if (!page) {
-        page = 1;
-    }8
+    // if (!page) {
+    //     page = 1;
+    // }
     const firstIndex = LAST_TWEETS * (page - 1);
     const lastIndex = LAST_TWEETS * page;
     const lastTweets = tweets.slice(firstIndex, lastIndex);
     lastTweets.forEach((tweet) => {
         tweet.avatar = users.find((u) => u.username === tweet.username).avatar;
     });
-
     res.send(lastTweets);
 });
 
@@ -73,14 +72,6 @@ app.get("/tweets/:username", (req, res) => {
     if (!users.some(u => u.username === username)) {
         return res.sendStatus(404);
     }
-
-    // const userTweets = tweets.filter((t) => t.username === username && { ...t }); // possível otimização de código
-    // const userTweets = tweets.filter((t) => {
-    //     if (t.username === username) {
-    //         const { username, tweet } = t;
-    //         return { username, tweet };
-    //     }
-    // });
     const userTweets = tweets.filter((t) => t.username === username);
     userTweets.forEach((u) => {
         u.avatar = users.find(u => u.username === u.username).avatar;

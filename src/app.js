@@ -1,5 +1,5 @@
-import express, { json } from "express";
 import cors from "cors";
+import express, { json } from "express";
 import notString from "./notString.js";
 
 
@@ -24,15 +24,13 @@ app.use(json());
 app.get("/tweets", (req, res) => {
     let page = parseInt(req.query.page) || 1;
 
-    if (/*page && */page < 1) {
+    if (page < 1) {
         return res.status(400).send("Informe uma página válida!");
     }
-    // if (!page) {
-    //     page = 1;
-    // }
     const firstIndex = LAST_TWEETS * (page - 1);
     const lastIndex = LAST_TWEETS * page;
     const lastTweets = tweets.slice(firstIndex, lastIndex);
+
     lastTweets.forEach((tweet) => {
         tweet.avatar = users.find((u) => u.username === tweet.username).avatar;
     });
@@ -62,7 +60,7 @@ app.post("/tweets", (req, res) => {
     if (!users.some((u) => u.username === user)) {
         return res.status(401).send("UNAUTHORIZED");
     }
-    tweets.push({ user, tweet });
+    tweets.push({ username: user, tweet });
     res.status(201).send("OK");
 });
 

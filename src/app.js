@@ -25,13 +25,6 @@ app.get("/tweets", (req, res) => {
     const lastTweets = tweets.slice(-LAST_TWEETS);
 
     lastTweets.forEach((tweet) => {
-        // const avatar = users.find((u) => u.username === tweet.username).avatar;
-        // const avatar = user ? user.avatar : null;
-        // if (avatar === undefined) {
-        //     return res.sendStatus(400);
-        // }
-        // tweet.avatar = avatar;
-
         tweet.avatar = users.find((u) => u.username === tweet.username).avatar;
     });
     res.send(lastTweets);
@@ -43,11 +36,9 @@ app.post("/sign-up", (req, res) => {
     if (notString(username) || notString(avatar)) {
         return res.status(400).send("Todos os campos são obrigatórios!");
     }
-
     if (users.some(u => u.username === username)) {
         return res.status(409).send("Username indisponível");
     }
-
     users.push({ username, avatar });
     res.status(201).send("OK");
 });
@@ -58,11 +49,9 @@ app.post("/tweets", (req, res) => {
     if (notString(username) || notString(tweet)) {
         return res.status(400).send("Todos os campos são obrigatórios!");
     }
-
     if (!users.some((u) => u.username === username)) {
         return res.status(401).send("UNAUTHORIZED");
     }
-
     tweets.push({ username, tweet });
     res.status(201).send("OK");
 });
@@ -74,16 +63,16 @@ app.get("/tweets/:username", (req, res) => {
         return res.sendStatus(404);
     }
 
-    const userTweets = tweets.filter((t) => {
-        if (t.username === username) {
-            const { username, tweet } = t;
-            return { username, tweet };
-        }
-    });
-
+    // const userTweets = tweets.filter((t) => t.username === username && { ...t }); // possível otimização de código
+    // const userTweets = tweets.filter((t) => {
+    //     if (t.username === username) {
+    //         const { username, tweet } = t;
+    //         return { username, tweet };
+    //     }
+    // });
+    const userTweets = tweets.filter((t) => t.username === username);
     userTweets.forEach((u) => {
-        const { avatar } = users.find(u => u.username === u.username);
-        u.avatar = avatar;
+        u.avatar = users.find(u => u.username === u.username).avatar;
     });
     res.send(userTweets);
 });
